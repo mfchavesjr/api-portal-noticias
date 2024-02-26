@@ -31,4 +31,10 @@ public class UsuarioService {
                 () -> new EntityNotFoundException(String.format("Usuário id=%s não encontrado", id))
         );
     }
+    @Transactional
+    public Usuario trocarSenha(Long id, String password) {
+        Usuario user = buscarPorId(id);
+        user.setPassword(password);//Hibernate salva internamente
+        return  user;
+    }
 }

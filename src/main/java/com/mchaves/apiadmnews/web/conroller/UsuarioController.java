@@ -33,4 +33,11 @@ public class UsuarioController {
         Usuario user = usuarioService.buscarPorId(id);
         return ResponseEntity.ok(user);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Usuario> updatePassword(@PathVariable Long id, @RequestBody Usuario usuario){
+        Usuario user = usuarioService.trocarSenha(id, usuario.getPassword());
+        return ResponseEntity.ok(user);
+    }
+
 }
