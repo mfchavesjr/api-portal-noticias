@@ -18,4 +18,9 @@ public class UsuarioService {
     public List<Usuario> buscarTodos() {
         return usuarioRepository.findAll();
     }
+
+    @Transactional
+    public Usuario salvar(Usuario usuario) {
+        return  usuarioRepository.save(usuario);
+    }
 }
