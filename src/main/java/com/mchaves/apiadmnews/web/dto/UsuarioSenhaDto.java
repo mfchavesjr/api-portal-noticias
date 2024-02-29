@@ -1,11 +1,11 @@
-package com.mchaves.apiadmnews.web.dto.mapper;
+package com.mchaves.apiadmnews.web.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
-@Setterg
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
