@@ -1,11 +1,18 @@
 package com.mchaves.apiadmnews.web.conroller;
 
 import com.mchaves.apiadmnews.entity.Usuario;
+import com.mchaves.apiadmnews.repository.UsuarioProjection;
 import com.mchaves.apiadmnews.service.UsuarioService;
+import com.mchaves.apiadmnews.web.dto.PageableDto;
 import com.mchaves.apiadmnews.web.dto.UsuarioCreateDto;
 import com.mchaves.apiadmnews.web.dto.UsuarioResponseDto;
+import com.mchaves.apiadmnews.web.dto.UsuarioSenhaDto;
+import com.mchaves.apiadmnews.web.dto.mapper.PageableMapper;
 import com.mchaves.apiadmnews.web.dto.mapper.UsuarioMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +27,9 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> getAll() {
+    public ResponseEntity<List<UsuarioResponseDto>> getAll() {
         List<Usuario> users = usuarioService.buscarTodos();
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(UsuarioMapper.toListDto(users));
     }
 
   @PostMapping
@@ -38,9 +45,9 @@ public class UsuarioController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Usuario> updatePassword(@PathVariable Long id, @RequestBody Usuario usuario){
-        Usuario user = usuarioService.trocarSenha(id, usuario.getPassword());
-        return ResponseEntity.ok(user);
+    public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody UsuarioSenhaDto dto){
+        usuarioService.trocarSenha(id, dto.getSenhaAtual(), dto.getNovaSenha(), dto.getConfirmaSenha());
+        return ResponseEntity.noContent().build();
     }
 
 }

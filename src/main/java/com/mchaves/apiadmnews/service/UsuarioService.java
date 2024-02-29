@@ -1,9 +1,11 @@
 package com.mchaves.apiadmnews.service;
 
 import com.mchaves.apiadmnews.entity.Usuario;
+import com.mchaves.apiadmnews.exception.PasswordInvalidException;
 import com.mchaves.apiadmnews.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +24,14 @@ public class UsuarioService {
 
     @Transactional
     public Usuario salvar(Usuario usuario) {
-        return  usuarioRepository.save(usuario);
+
+        try {
+            usuario.setPassword(usuario.getPassword());
+            return usuarioRepository.save(usuario);
+        } catch (DataIntegrityViolationException ex) {
+            throw new DataIntegrityViolationException(String.format("Username '%s' já cadastrado", usuario.getUsername()));
+        }
+
     }
 
     @Transactional(readOnly = true)
@@ -31,10 +40,19 @@ public class UsuarioService {
                 () -> new EntityNotFoundException(String.format("Usuário id=%s não encontrado", id))
         );
     }
+
     @Transactional
-    public Usuario trocarSenha(Long id, String password) {
+    public Usuario trocarSenha(Long id, String senhaAtual, String novaSenha, String confirmaSenha) {
+        if (!novaSenha.equals(confirmaSenha)) {
+            throw new PasswordInvalidException("Nova senha não confere com confirmação de senha.");
+        }
+
         Usuario user = buscarPorId(id);
-        user.setPassword(password);//Hibernate salva internamente
-        return  user;
+        if (!senhaAtual.equals(user.getPassword())) {
+            throw new PasswordInvalidException("Sua senha não confere.");
+        }
+
+        user.setPassword(novaSenha);
+        return user;
     }
 }
