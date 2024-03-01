@@ -2,6 +2,7 @@ package com.mchaves.apiadmnews.service;
 
 import com.mchaves.apiadmnews.entity.Usuario;
 import com.mchaves.apiadmnews.exception.PasswordInvalidException;
+import com.mchaves.apiadmnews.exception.UsernameUniqueViolationException;
 import com.mchaves.apiadmnews.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class UsuarioService {
             usuario.setPassword(usuario.getPassword());
             return usuarioRepository.save(usuario);
         } catch (DataIntegrityViolationException ex) {
-            throw new DataIntegrityViolationException(String.format("Username '%s' já cadastrado", usuario.getUsername()));
+            throw new UsernameUniqueViolationException(String.format("Username '%s' já cadastrado", usuario.getUsername()));
         }
 
     }
