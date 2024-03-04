@@ -1,10 +1,11 @@
 package com.mchaves.apiadmnews.service;
 
 import com.mchaves.apiadmnews.entity.Usuario;
+import com.mchaves.apiadmnews.exception.EntityNotFoundException;
 import com.mchaves.apiadmnews.exception.PasswordInvalidException;
 import com.mchaves.apiadmnews.exception.UsernameUniqueViolationException;
 import com.mchaves.apiadmnews.repository.UsuarioRepository;
-import jakarta.persistence.EntityNotFoundException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
