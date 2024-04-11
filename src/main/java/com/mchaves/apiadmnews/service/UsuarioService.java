@@ -8,6 +8,7 @@ import com.mchaves.apiadmnews.repository.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public List<Usuario> buscarTodos() {
@@ -28,7 +30,7 @@ public class UsuarioService {
     public Usuario salvar(Usuario usuario) {
 
         try {
-            usuario.setPassword(usuario.getPassword());
+            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
             return usuarioRepository.save(usuario);
         } catch (DataIntegrityViolationException ex) {
             throw new UsernameUniqueViolationException(String.format("Username '%s' já cadastrado", usuario.getUsername()));
@@ -50,11 +52,11 @@ public class UsuarioService {
         }
 
         Usuario user = buscarPorId(id);
-        if (!senhaAtual.equals(user.getPassword())) {
+        if (!passwordEncoder.matches(senhaAtual, user.getPassword())) {
             throw new PasswordInvalidException("Sua senha não confere.");
         }
 
-        user.setPassword(novaSenha);
+        user.setPassword(passwordEncoder.encode(novaSenha));
         return user;
     }
 
